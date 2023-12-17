@@ -3,80 +3,90 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <list>
 #include "Tree.h"
 #include "Node.h" 
+#include "Vector.h"
 
 using namespace std;
 
-int firstFreq, secondFreq;
-string firstFreqStr, secondFreqStr;
+pair<string, int> _firstMin, _secondMin;
 
-void FindMinElements(const map<string, int> frequencies)
+void FindMin(Vector& vec)
 {
-	firstFreq = secondFreq = 101;
-	for (const auto& i : frequencies) {
-		if (i.second < firstFreq) {
-			firstFreqStr = i.first;
-			firstFreq = i.second;
-		}
-		if (i.second < secondFreq && i.second != firstFreq) {
-			secondFreqStr = i.first;
-			secondFreq = i.second;
-		}
-	}
-}
+	_firstMin.second = _secondMin.second = 100;
 
-void FindMaxElements(const map<string, int> frequencies)
-{
-	firstFreq = secondFreq = -1;
-	for (const auto& i : frequencies) {
-		if (i.second > firstFreq) {
-			firstFreqStr = i.first;
-			firstFreq = i.second;
+	for (const auto& element : vec.vector) {
+		if (element.second < _firstMin.second) {
+			_secondMin = _firstMin;
+			_firstMin = element;
 		}
-		if (i.second > secondFreq && i.second != firstFreq) {
-			secondFreqStr = i.first;
-			secondFreq = i.second;
+		else if (element.second < _secondMin.second && element.second != _firstMin.second) {
+			_secondMin = element;
 		}
 	}
-}
-
-void PrintMap(const map<string, int> frequencies)
-{
-	for (const auto& i : frequencies) {
-		cout << i.first << " " << i.second << endl;
-	}
-}
-
-void UpdateFrequencies(map<string, int>* frequencies)
-{
-	frequencies->erase(firstFreqStr);
-	frequencies->erase(secondFreqStr);
-	(*frequencies)[firstFreqStr + secondFreqStr] = firstFreq + secondFreq;
 }
 
 int main()
 {
-	vector<pair<string, int> > frequencies;
+	Vector frequencies;
 
-	frequencies = 5; 
-	frequencies["b"] = 9; 
-	frequencies["c"] = 12;
-	frequencies["d"] = 13;
-	frequencies["e"] = 16;
-	frequencies["f"] = 45;
+	list<Vector> freqList;
+
+	//Input start frequencies
+	frequencies.AddPair("a", 5);
+	frequencies.AddPair("b", 9);
+	frequencies.AddPair("c", 12);
+	frequencies.AddPair("d", 13);
+	frequencies.AddPair("e", 16);
+	frequencies.AddPair("f", 45);
 	
-	//Tree huffmanTree = Tree();
 
-	FindMinElements(frequencies);
+	//Generate all of the temperary frequencies for the Huffman tree
+	freqList.push_back(frequencies);
+	
+	while (frequencies.vector.size() > 1) 
+	{
+		FindMin(frequencies);
 
-	UpdateFrequencies(&frequencies);
+		frequencies.CombinePairs(_firstMin.first, _secondMin.first);
 
-	sortMap(frequencies);
+		frequencies.SortVector();
 
-	PrintMap(frequencies);
+		freqList.push_back(frequencies);
+	}
 
-	//huffmanTree.PrintTree();
+	//Print all of the temperary frequencies
+	for (auto& freq : freqList) {
+		freq.PrintVector();
+	}
+
+
+	//Initialize Tree
+	Tree huffmanTree = Tree();
+	huffmanTree.tree->SetValue(freqList.back().vector.back().first);
+	freqList.pop_back();
+
+	//Generate Huffman Tree
+	while (!freqList.empty())
+	{
+		FindMin(freqList.back());
+
+		Node* parentNode = huffmanTree.FindNode(_firstMin.first + _secondMin.first);
+
+		parentNode->AddLeftChild(_firstMin);
+		parentNode->AddRightChild(_secondMin);
+
+		freqList.pop_back();
+	}
+
+	//Print Huffman tree and Node paths
+	huffmanTree.PrintTree();
+
+	huffmanTree.PrintEndNodeCount();
+	huffmanTree.PrintPathToEndNodes();
+
+	huffmanTree.SavePathToEndNodes();
 
 	return 0;
 }

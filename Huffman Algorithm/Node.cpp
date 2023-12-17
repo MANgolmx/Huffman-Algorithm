@@ -2,12 +2,12 @@
 
 int Node::GetFrequency()
 {
-    return frequency;
+    return pair.second;
 }
 
 std::string Node::GetValue()
 {
-    return value;
+    return pair.first;
 }
 
 Node* Node::GetParent()
@@ -17,12 +17,12 @@ Node* Node::GetParent()
 
 void Node::SetFrequency(int freq)
 {
-    frequency = freq;
+    pair.second = freq;
 }
 
 void Node::SetValue(std::string val)
 {
-    value = val;
+    pair.first = val;
 }
 
 void Node::SetParent(Node* par)
@@ -38,6 +38,16 @@ void Node::AddLeftChild(std::string value, int freq)
 void Node::AddRightChild(std::string value, int freq)
 {
     childRight = new Node(freq, value, this);
+}
+
+void Node::AddLeftChild(std::pair<std::string, int> lpair)
+{
+    childLeft = new Node(lpair, this);
+}
+
+void Node::AddRightChild(std::pair<std::string, int> rpair)
+{
+    childRight = new Node(rpair, this);
 }
 
 void Node::AddLeftChild(Node* leftChild)

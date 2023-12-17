@@ -5,20 +5,31 @@
 class Tree
 {
 private:
-	Node* tree;
+	void _PrintNode(Node* currentNode, int depth = 0);
 
-	void PrintNode(Node* currentNode, int depth = 0);
+	Node* _SearchNode(Node* currentNode, std::string key);
+
+	void _PrintPathToEndNode(Node* currentNode, std::vector<int>& path);
+	void _SavePathToEndNodes(FILE* file, Node* currentNode, std::vector<int>& path);
+
+	int _CalculateEndNodeCount(Node* currentNode);
 
 public:
+	Node* tree;
 
 	Tree()
 	{
 		tree = new Node();
 	}
 
-	Node* GetTree();
-
 	void PrintTree();
+
+	Node* FindNode(std::string key);
+
+	void PrintPathToEndNodes();
+	void SavePathToEndNodes();
+
+	void PrintEndNodeCount();
 
 	~Tree()
 	{

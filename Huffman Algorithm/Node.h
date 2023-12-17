@@ -4,8 +4,7 @@
 class Node
 {
 private:
-	int frequency;
-	std::string value;
+	std::pair<std::string, int> pair;
 	Node* parent;
 	Node* childLeft;
 	Node* childRight;
@@ -13,14 +12,19 @@ private:
 public:
 	Node() 
 	{
-		frequency = 100;
-		value = " ";
+		pair.first = " ";
+		pair.second = 100;
 		parent = nullptr;
 	}
 	Node(int freq, std::string val, Node* par)
 	{
-		frequency = freq;
-		value = val;
+		pair.first = val;
+		pair.second = freq;
+		parent = par;
+	}
+	Node(std::pair<std::string, int> npair, Node* par)
+	{
+		pair = npair;
 		parent = par;
 	}
 
@@ -34,6 +38,9 @@ public:
 
 	void AddLeftChild(std::string value, int freq);
 	void AddRightChild(std::string value, int freq);
+
+	void AddLeftChild(std::pair<std::string, int> lpair);
+	void AddRightChild(std::pair<std::string, int> rpair);
 
 	void AddLeftChild(Node* leftChild);
 	void AddRightChild(Node* rightChild);

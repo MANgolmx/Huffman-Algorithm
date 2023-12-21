@@ -2,9 +2,9 @@
 #include <algorithm>
 #include "Vector.h"
 
-void Vector::AddPair(std::string first, int second)
+void Vector::AddPair(std::string first, float second)
 {
-    std::pair<std::string, int> newPair = std::make_pair(first, second);
+    std::pair<std::string, float> newPair = std::make_pair(first, second);
     vector.push_back(newPair);
 }
 
@@ -19,7 +19,7 @@ void Vector::CombinePairs(std::string firstKey, std::string secondKey)
     auto it1 = std::find_if(vector.begin(), vector.end(),
         [&](const auto& pair) { return pair.first == firstKey; });
 
-    int sum = it1->second;
+    float sum = it1->second;
     vector.erase(it1);
 
     auto it2 = std::find_if(vector.begin(), vector.end(),

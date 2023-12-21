@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include "Node.h"
 
 #pragma once
@@ -13,6 +14,8 @@ private:
 	void _SavePathToEndNodes(FILE* file, Node* currentNode, std::vector<int>& path);
 
 	int _CalculateEndNodeCount(Node* currentNode);
+
+	std::map<char, std::string> _BuildMap(Node* currentNode, const std::string& currentPath);
 
 public:
 	Node* tree;
@@ -30,6 +33,8 @@ public:
 	void SavePathToEndNodes();
 
 	void PrintEndNodeCount();
+
+	std::map<char, std::string> BuildMap();
 
 	~Tree()
 	{

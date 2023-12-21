@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vector>
 #include "Tree.h"
 
@@ -65,11 +66,10 @@ void Tree::_SavePathToEndNodes(FILE* file, Node* currentNode, std::vector<int>& 
 
         if (currentNode->GetLeftChild() == nullptr && currentNode->GetRightChild() == nullptr)
         {
-            fprintf(file, "%s ", currentNode->GetValue().c_str());
+            fprintf(file, "\'%s\'", currentNode->GetValue().c_str());
             for (int i : path) {
                 fprintf(file, "%i", i);
             }
-            fprintf(file, " ");
         }
     }
 }
@@ -83,6 +83,28 @@ int Tree::_CalculateEndNodeCount(Node* currentNode)
         return 1;
 
     return _CalculateEndNodeCount(currentNode->GetLeftChild()) + _CalculateEndNodeCount(currentNode->GetRightChild());
+}
+
+std::map<char, std::string> Tree::_BuildMap(Node* currentNode, const std::string& currentPath)
+{
+    std::map<char, std::string> result;
+
+    if (currentNode != nullptr)
+    {
+        // If its a leaf node, add a pair to the result map
+        if (currentNode->GetLeftChild() == nullptr && currentNode->GetRightChild() == nullptr)
+            result[currentNode->GetLeafNodeValue()] = currentPath;
+
+        // Recursively build the map for the left and right subtrees
+        std::map<char, std::string> leftResult = _BuildMap(currentNode->GetLeftChild(), currentPath + "0");
+        std::map<char, std::string> rightResult = _BuildMap(currentNode->GetRightChild(), currentPath + "1");
+
+        // Concatenate maps
+        result.insert(leftResult.begin(), leftResult.end());
+        result.insert(rightResult.begin(), rightResult.end());
+    }
+
+    return result;
 }
 
 void Tree::PrintTree()
@@ -107,13 +129,13 @@ void Tree::SavePathToEndNodes()
 	
     FILE* file;
     
-	if (fopen_s(&file, "code.txt", "wt") != 0)
+	if (fopen_s(&file, "code.hca", "wb") != 0)
 	{
 		perror("Error opening file");
 		return;
 	}
 
-    fprintf(file, "%i ", _CalculateEndNodeCount(tree));
+    fprintf(file, "%i", _CalculateEndNodeCount(tree));
 	_SavePathToEndNodes(file, tree, path);
 	fclose(file);
 }
@@ -121,4 +143,9 @@ void Tree::SavePathToEndNodes()
 void Tree::PrintEndNodeCount()
 {
     std::cout << _CalculateEndNodeCount(tree) << std::endl;
+}
+
+std::map<char, std::string> Tree::BuildMap()
+{    
+    return _BuildMap(tree, "");
 }

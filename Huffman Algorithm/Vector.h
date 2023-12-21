@@ -7,11 +7,12 @@ class Vector
 {
 
 public:
-	std::vector<std::pair<std::string, int>> vector;
+	std::vector<std::pair<std::string, float>> vector;
 
 	Vector() { ; }
+	Vector(std::vector<std::pair<std::string, float>> vec) { vector = vec; }
 	
-	void AddPair(std::string first, int second);
+	void AddPair(std::string first, float second);
 	void SortVector();
 
 	void CombinePairs(std::string firstKey, std::string secondKey);
